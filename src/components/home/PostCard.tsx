@@ -16,9 +16,9 @@ export const PostCard: React.FC<PostCardProps> = React.memo(({ post, onPress }) 
       style={styles.card}
       onPress={() => onPress(post)}
     >
-      <Text style={styles.title} numberOfLines={1}>{post.title}</Text>
+      <Text style={styles.title}>{post.title}</Text>
       <View style={styles.divider} />
-      <Text style={styles.body} numberOfLines={2}>{post.body.replace(/\n/g, ' ')}</Text>
+      <Text style={styles.body}>{post.body}</Text>
       
       <View style={styles.footer}>
         <Badge label={`User ${post.userId}`} />
