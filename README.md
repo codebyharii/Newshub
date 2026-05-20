@@ -1,3 +1,7 @@
+## Download APK
+
+[⬇ Download Latest APK](https://github.com/codebyharii/Newshub/releases/latest/download/app-release.apk)
+
 # NewsHub · React Native
 
 A production-quality news reader demonstrating architecture patterns for
