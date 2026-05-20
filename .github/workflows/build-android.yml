@@ -1,10 +1,13 @@
-name: Android Build
+name: Android Build & Release APK
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -28,29 +31,33 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
+      - name: Install Android SDK Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dos2unix
+
       - name: Grant execute permission for gradlew
         run: |
-          sudo apt-get install -y dos2unix
           dos2unix android/gradlew
           chmod +x android/gradlew
 
       - name: Build Android Release APK
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         run: |
           cd android
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-          ./gradlew assembleRelease --stacktrace --info > gradle_build.log 2>&1
+          ./gradlew assembleRelease --stacktrace
 
-      - name: Upload Build Logs (If Failed)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gradle-logs
-          path: android/gradle_build.log
-
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
           path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.${{ github.run_number }}
+          name: Release v1.${{ github.run_number }}
+          files: android/app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
