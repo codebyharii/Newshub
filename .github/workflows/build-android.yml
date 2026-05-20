@@ -40,7 +40,14 @@ jobs:
         run: |
           cd android
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --stacktrace --info > gradle_build.log 2>&1
+
+      - name: Upload Build Logs (If Failed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-logs
+          path: android/gradle_build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
